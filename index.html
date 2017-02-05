@@ -1,0 +1,270 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Time to First Byte</title>
+    <link rel="shortcut icon" href="./images/favicon.ico">
+    <link rel="stylesheet" href="./styles/reset.css">
+    <link rel="stylesheet" href="./styles/home.css">
+    <link rel="stylesheet" href="./styles/styles.css">
+    <meta name="viewport" content="width=device-width">
+</head>
+<body>
+<header class="header">
+    <h1 class="logo">
+        <a href="https://www.serverdensity.com" class="logo__link">Server Density</a>
+    </h1>
+    <h2 class="title">Time to First Byte</h2>
+    <nav class="nav">
+        <ul class="nav__list">
+            <li class="nav__list__item">
+                <a href="https://www.serverdensity.com/server-monitoring/" class="nav__list__item__link">Server Monitoring</a>
+            </li>
+            <li class="nav__list__item">
+                <a href="https://www.serverdensity.com/pricing/" class="nav__list__item__link">Pricing</a>
+            </li>
+            <li class="nav__list__item">
+                <a href="https://blog.serverdensity.com" class="nav__list__item__link">Blog</a>
+            </li>
+            <li class="nav__list__item">
+                <a href="https://www.serverdensity.com/login/" class="nav__list__item__link">Sign In</a>
+            </li>
+        </ul>
+    </nav>
+</header>
+<main class="main">
+    <section class="main__copy">
+        <h3 class="main__title">Check the TTFB and response time of your page</h3>
+        <form class="form" id="form">
+            <input class="form__input" type="text" placeholder="distilled.net">
+            <input class="form__submit" type="submit" id="submit" value="Find out">
+            <img src="./images/load.gif" class="loader" id="loader">
+        </form>
+        <section class="results hidden">
+            <a href="#" class="close" id="close">close</a>
+            <div class="graph">
+                <div class="bar">
+                    <div class="bargraph">
+                        <span class="bar__section dns" id="bar__dns"></span>
+                        <span class="bar__section connection" id="bar__connection"></span>
+                        <span class="bar__section wait" id="bar__wait"></span>
+                    </div>
+                    <div class="scale">
+                        <span class="scale__dash"></span>
+                        <span class="scale__dash"></span>
+                        <span class="scale__dash"></span>
+                        <span class="scale__dash"></span>
+                        <span class="scale__dash scale__middle"></span>
+                        <span class="scale__dash"></span>
+                        <span class="scale__dash"></span>
+                        <span class="scale__dash"></span>
+                        <span class="scale__dash"></span>
+                    </div>
+                    <div class="axis">
+                        <span class="axis__marker marker__one">0</span>
+                        <span id="marker__two" class="axis__marker marker__two">50%</span>
+                        <span id="marker__three" class="axis__marker marker__three">100%</span>
+                    </div>
+                    <p class="axis__label">Response time in milliseconds</p>
+                </div>
+            </div>
+            <table class="table" id="resultstable">
+                <tr class="row">
+                    <td class="cell"><span class="box dns"></span> DNS Lookup</td>
+                    <td class="cell" id="dns">5ms</td>
+                </tr>
+                <tr class="row">
+                    <td class="cell"><span class="box connection"></span> Connection</td>
+                    <td class="cell" id="connection">70ms</td>
+                </tr>
+                <tr class="row">
+                    <td class="cell"><span class="box wait"></span> Wait</td>
+                    <td class="cell" id="wait">25ms</td>
+                </tr>
+                <tr class="row__total">
+                    <td class="cell"><span class="box ttfb"></span> TTFB</td>
+                    <td class="cell" id="total">100ms</td>
+                </tr>
+            </table>
+            <p class="results__text">The TTFB of the site is below <span id="under">200</span>ms</p>
+        </section>
+    </section>
+    <section class="main__copy">
+        <h3 class="main__title">What is Time to First Byte?</h3>
+        <p class="main__text">When a user requests a web page, several things have to happen before they receive a response:</p>
+        <ol class="main__list">
+            <li class="main__list__item"><span class="bold">The domain name is resolved as an IP address.</span> This process is handled by the Domain Name Service (DNS)—a distributed network of servers that provide only this function.</li>
+            <li class="main__list__item">Once the IP address is known, <span class="bold">the user’s device must open a connection to the server.</span> This is known as the TCP/IP Handshake. If the website is served over HTTPS, there’s an additional step to this process known as the SSL Handshake.</li>
+            <li class="main__list__item">Now that the connection is open, <span class="bold">the server can begin working on its response</span> to the user’s request. This stage could include many different moving parts—making database queries, redirecting from one URL to another, or using a server-side language such as PHP to render an HTML page.</li>
+            <li class="main__list__item"><span class="bold">The server completes its work and begins to send a response.</span> Each response is broken into many small “packets” of data, and sent out over the internet. These packets reach the user’s device, where they are pieced back together to render the page. When the user receives the first response packet, that’s when we register Time to First Byte (TFFB).</li>
+            <li class="main__list__item">Once the response has been received, <span class="bold">the user’s browser starts working on all the other important things:</span> JavaScript, CSS, external resources, etc. But these don’t form part of the TTFB.</li>
+        </ol>
+        <h3 class="main__title">What are the causes of slow TTFB?</h3>
+        <p class="main__text">The first thing to know is slow Time to First Byte doesn’t necessarily mean you have a problem. There could be perfectly valid reasons for a slower TTFB—see “When not to worry” section below. Generally speaking, though, you should investigate if your TTFB:</p>
+        <figure>
+            <img class="main__img" src="images/one.png" alt="varies significantly over time">
+            <figcaption>varies significantly over time</figcaption>
+        </figure>
+        <figure>
+            <img class="main__img" src="images/two.png" alt="varies a lot by location">
+            <figcaption>varies a lot by location</figcaption>
+        </figure>
+        <figure class="last">
+            <img class="main__img" src="images/three.png" alt="is slower than 200 ms">
+            <figcaption>is slower than 200 ms</figcaption>
+        </figure>
+        <h4 class="main__subtitle">Server Issues</h4>
+        <p class="main__text">The issues of most interest are those at the server level. TTFB can mask many infrastructure-level issues, including:</p>
+        <ul class="main__bulletlist">
+            <li class="main__bulletlist__item">High disk-space usage</li>
+            <li class="main__bulletlist__item">Poorly-configured servers</li>
+            <li class="main__bulletlist__item">Slow database requests</li>
+            <li class="main__bulletlist__item">Devices struggling under CPU or I/O constraints—perhaps when traffic is spiking</li>
+        </ul>
+        <p class="main__text">Web-based speed tests won’t uncover these issues—all that can be seen from the outside is the server’s slow overall response time. So, when measuring changes to your Time To First Byte, it’s important to consider it together with other metrics, measured from within the machine itself: free disk space, database response times, CPU usage, and I/O throughput. Measuring the correlations between these and TTFB will allow you to see which issues in your infrastructure are actually causing problems for the end user.</p>
+        <h4 class="main__subtitle">Network Issues</h4>
+        <p class="main__text">Because TTFB includes the time taken for the packets to travel over the wire, network latency can matter a great deal. If packets have to travel from a website in Japan to a browser in Argentina, there’s quite some distance to cover. Distributed networks and CDNs solve some of these issues, but add expense and complexity. The only way to identify bottlenecks at the network level is by testing overall site response times from multiple locations—for example, testing from where your customers may be.</p>
+    </section>
+    <section class="breaker">
+        <img src="images/earth.jpg" class="breaker__img">
+    </section>
+    <section class="main__copy">
+        <p class="main__text">We monitor our customer's websites from multiple locations around the world to determine exactly how network infrastructure and latency affect response times. Median response times for end users vary hugely by location, with UK-based users seeing a median response time of 365ms and China at the other extreme at 1895ms. Some factors —the quality of a country's internet infrastructure is one of them— will always be beyond the webmaster's control, but distance alone seems to be a significant factor even now.</p>
+        <figure class="big">
+            <figcaption>Median server response times by user location</figcaption>
+            <img src="images/four.png" class="main__img" alt="Median server response times by user location">
+        </figure>
+        <h3 class="main__title">When shouldn't you worry?</h3>
+        <p class="main__text">Slow TTFB times aren’t always a cause for concern. For users, the single most important metric for users is the complete time taken to load the page. And sometimes a little extra work on the server side can deliver page speed improvements for the user.</p>
+        <p class="main__text">For example, static assets such as CSS files can be compressed using gzip on the server. This will typically increase the Time to First Byte, because the server has more work to do, compressing the files before they are sent out over the wire. The net result for the user might be positive, if compression means faster loading of CSS styles and JavaScript.</p>
+        <p class="main__text">Depending on your application, you might choose to prepare more response data on the server side—in PHP or Python, for example—rather than relying on JavaScript to fetch it in the user’s browser later. And if you want to ensure that the original response contains everything the user needs—and doesn’t leave them waiting on further JavaScript calls or external resources—a longer TTFB might be completely justifiable.</p>
+        <p class="main__text">An unfortunate myth around the topic is that search engines treat time to first byte as a ranking factor. There is no solid evidence for this, nor does it make sense: search engines care about the user’s experience—not the time taken for the first byte to reach the browser. In addition, search engine crawlers still have some difficulty with JavaScript-heavy sites—even though those sites might have an extremely short TTFB if most of the heavy lifting takes place client-side.</p>
+        <h3 class="main__title">Next Steps</h3>
+        <p class="main__text">The most important thing to know about your time to first byte is whether it’s consistent. Even if you’re always visiting your website from your own computer or network, there’s little way to tell whether a user from Italy experienced slow page load times at 2.30am last night. So:</p>
+
+        <article class="article">
+            <img class="main__img" src="images/five.png" alt="List locations">
+            <h4 class="article__title">List locations</h4>
+            <p class="article__text">Put together a list of your most important monitoring locations—wherever your customers are liable to be.</p>
+        </article>
+        <article class="article">
+            <img class="main__img" src="images/six.png" alt="Monitor response times">
+            <h4 class="article__title">Monitor response times</h4>
+            <p class="article__text">Monitor continuously for a few days, from all locations. You can do this free of charge with Server Density for 3 days - enough time to gather some data and get a sense of the scale of the problem.</p>
+        </article>
+        <article class="article last">
+            <img class="main__img" src="images/seven.png" alt="Analyse Data">
+            <h4 class="article__title">Analyse Data</h4>
+            <p class="article__text">Pull the data together with metrics gathered from your devices. Is your TTFB spiking when a particular device runs out of disk space? Or is it correlated with database query times? All of the issues we’ve discussed here will have some impact, but studying your own metrics closely will help you decide which is most important for you.</p>
+        </article>
+        <p class="signup__text">Signup takes a few seconds, setup takes a few minutes</p>
+        <a class="signup__link" href="https://www.serverdensity.com/signup/">Sign up to your <span class="signup__bold">free trial</span> now</a>
+    </section>
+</main>
+<div id="footer-wrapper">
+    <footer class="clearfix helv-thin">
+        <nav id="footer-main" class="clearfix">
+            <ul id="footer-main-nav" class="logo__footer">
+                <div id="footer-identity" class="clearfix">
+                    <h1><a href="https://www.serverdensity.com/" title="Server Density"><img class="logo__sm" src="./images/logo_sm.svg"></a></h1>
+                </div>
+            </ul>
+            <ul id="footer-serv-nav">
+                <li><a data-link="signup" class="helv-bold" title="Server and Website monitoring free to try" href="https://www.serverdensity.com/#/signup">Monitoring</a></li>
+                <li><a data-link="signup" title="Sign up for our free trial" href="https://www.serverdensity.com/signup?plan=sd45_usd">Free Trial</a></li>
+                <li><a title="Server and website monitoring pricing" href="https://www.serverdensity.com/pricing/">Pricing</a></li>
+                <li><a title="App Security" href="https://www.serverdensity.com/security/">Security</a></li>
+                <li><a title="Technical Specs" href="https://www.serverdensity.com/tech-specs/">Tech Specs</a></li>
+                <li><a title="Technical Support" href="https://www.serverdensity.com/support/">Our Support</a></li>
+            </ul>
+            <ul id="footer-company-nav">
+                <li><a class="helv-bold" title="Server Density Story" href="https://www.serverdensity.com/story/">Company</a></li>
+                <li><a title="Server Density Story" href="https://www.serverdensity.com/story/">Our Story</a></li>
+                <li><a title="Server Density" href="https://www.serverdensity.com/case-studies/">Case Studies</a></li>
+                <li><a title="Inside the Server Density office" href="https://www.serverdensity.com/office/">Office</a></li>
+                <li><a title="Server Density jobs" href="https://www.serverdensity.com/jobs/">Jobs</a></li>
+                <li><a title="Contact Server Density" href="https://www.serverdensity.com/contact/">Contact</a></li>
+            </ul>
+            <div class="separator"></div>
+            <ul id="footer-contact-nav">
+                <li><a target="_blank" href="https://blog.serverdensity.com/"><span class="icon-blog sprite"></span>blog</a></li>
+                <li><a href="tel:+1-646-419-4674"><span class="icon-phone sprite"></span>+1 (646) 419-4674</a></li>
+                <li><a href="mailto:hello@serverdensity.com"><span class="icon-email sprite"></span>hello@serverdensity.com</a></li>
+            </ul>
+            <div class="separator"></div>
+            <ul id="footer-service-nav">
+                <li><a class="helv-bold" href="https://www.serverdensity.com/login/"><span class="icon-login sprite"></span>log in</a></li>
+                <li><a class="helv-bold" target="_blank" href="http://status.serverdensity.com/"><span class="icon-service-status sprite"></span>service status</a></li>
+                <li><a class="helv-bold" href="https://www.serverdensity.com/support"><span class="icon-support sprite"></span>support</a></li>
+            </ul>
+        </nav>
+        <nav id="footer-features" class="clearfix">
+<span class="center-align clearfix">
+<ul id="footer-sm-features-nav" class="col first">
+<li><a class="helv-bold" href="https://www.serverdensity.com/server-monitoring/" title="Server Monitoring">Server Monitoring</a></li>
+<li><a href="https://www.serverdensity.com/tech-specs/">Technical Specs</a></li>
+<li><a href="https://www.serverdensity.com/server-monitoring/#alerting">Alerting</a></li>
+<li><a href="https://www.serverdensity.com/monitoring-graphs/" title="Monitoring graphs">Monitoring Graphs</a></li>
+<li><a href="https://www.serverdensity.com/server-monitoring/#plugins">Plugins</a></li>
+<li><a href="https://www.serverdensity.com/server-monitoring/#api">API</a></li>
+<li><a href="https://www.serverdensity.com/integrations/" title="Monitoring integrations">Integrations (60+)</a></li>
+<li><a href="https://www.serverdensity.com/ops-dashboard/" title="Monitoring dashboards">Ops Dashboard</a></li>
+</ul>
+<ul class="col second">
+<li class="sub-header helv-bold">OS &amp; Apps Support</li>
+<li><a title="Linux server monitoring" href="https://www.serverdensity.com/linux-server-monitoring/">Linux server monitoring</a></li>
+<li><a title="Windows server monitoring" href="https://www.serverdensity.com/windows-server-monitoring/">Windows server monitoring</a></li>
+<li><a title="OS X server monitoring" href="https://www.serverdensity.com/osx-server-monitoring/">OS X server monitoring</a></li>
+<li><a title="FreeBSD server monitoring" href="https://www.serverdensity.com/freebsd-server-monitoring/">FreeBSD server monitoring</a></li>
+</ul>
+<ul class="col third">
+<li><a class="helv-bold" target="_blank" href="https://www.serverdensity.com/integrations/">Plugins</a></li>
+<li><a target="_blank" href="https://www.serverdensity.com/integrations/">Directory</a></li>
+<li><a target="_blank" href="https://support.serverdensity.com/hc/en-us/articles/213074438-Information-about-Custom-Plugins">Developers</a></li>
+<li><a title="Nagios Plugin Wrapper" href="https://www.serverdensity.com/plugins/nagios/">Nagios</a></li>
+<li><a title="Monitor MongoDB" href="https://www.serverdensity.com/plugins/mongodb/">MongoDB</a></li>
+<li><a title="Monitor NGINX" href="https://www.serverdensity.com/plugins/nginx/">NGINX</a></li>
+<li><a title="Monitor MySQL" href="https://www.serverdensity.com/plugins/mysql/">MySQL</a></li>
+</ul>
+<ul id="footer-wm-features-nav" class="col first">
+<li><a class="helv-bold" href="https://www.serverdensity.com/website-monitoring/">Website Monitoring</a></li>
+<li><a href="https://www.serverdensity.com/tech-specs/">Technical Specs</a></li>
+<li><a href="https://www.serverdensity.com/website-monitoring/#status">Status</a></li>
+<li><a href="https://www.serverdensity.com/website-monitoring/#response-time">Response Time</a></li>
+<li><a href="https://www.serverdensity.com/website-monitoring/#uptime">Uptime</a></li>
+<li><a href="https://www.serverdensity.com/website-monitoring/#worldwide-nodes">Worldwide Monitoring</a></li>
+<li><a href="https://www.serverdensity.com/ops-dashboard/">Ops Dashboard</a></li>
+</ul>
+<ul id="footer-cm-features-nav" class="col first">
+<li><a class="helv-bold" href="https://www.serverdensity.com/cloud-management/">Cloud Integrations</a></li>
+<li><a href="https://www.serverdensity.com/amazon-cloud-management/">Amazon Cloud</a></li>
+<li><a href="https://www.serverdensity.com/rackspace-cloud-management/">Rackspace Cloud</a></li>
+<li><a href="https://www.serverdensity.com/google/">Google Cloud</a></li>
+<li class="compare helv-bold">Compare</li>
+<li><a href="https://www.serverdensity.com/newrelic/" title="New Relic Alternative">New Relic</a></li>
+<li><a href="https://www.serverdensity.com/nagios-alternative/" title="Nagios Alternative">Nagios Alternative</a></li>
+<li><a href="https://www.serverdensity.com/zabbix-alternative/" title="Zabbix Alternative">Zabbix Alternative</a></li>
+</ul>
+<ul class="col second">
+<li class="sub-header helv-bold">Supported Platforms</li>
+<li><a href="https://www.serverdensity.com/iphone/" title="iPhone server monitoring">iPhone App</a></li>
+<li><a href="https://www.cloudstatusapp.com/" title="Cloud Status App">Cloud Status App</a></li>
+<li><a href="https://www.serverdensity.com/appletv/" title="Apple TV server monitoring">Apple TV App</a></li>
+<li><a href="https://www.serverdensity.com/android/" title="Android server monitoring">Android App</a></li>
+<li><a href="https://www.serverdensity.com/slackbot/" title="Monitoring SlackBot">SDBot (Slackbot)</a></li>
+</ul>
+</span>
+        </nav>
+    </footer>
+</div>
+<div id="legal" class="clearfix">
+    <div id="company-info">
+        Server Density Limited is registered at The Organ Works, Turnham Green Terrace Mews, Chiswick, London, W4 1QU in England and Wales.<br>Company number 6870546, VAT number GB 978 4648 50 and is registered under the Data Protection Act 1998, registration number Z1787867.
+    </div>
+    <div class="separator"></div>
+    <div id="terms-and-conditions"><a href="https://www.serverdensity.com/terms-and-conditions/">Terms &amp; Conditions</a></div>
+</div>
+
+<script src="script.js"></script>
+<!-- Go to www.addthis.com/dashboard to customize your tools --> <script type="text/javascript" src="//s7.addthis.com/js/300/addthis_widget.js#pubid=ra-5897819f736692cc"></script>
+</body>
+</html>
